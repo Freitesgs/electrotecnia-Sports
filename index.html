@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ElectroTecnia Sports</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+<!-- Supabase (JS): conexión con la base de datos PostgreSQL -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+
+<div id="login" class="login">
+ <div class="loginbox">
+  <section class="loginleft">
+   <img src="img/logo-liceo.png" alt="Logo">
+   <h1>ElectroTecnia<br>Sports</h1><div class="small" style="color:#dbeaff;margin-top:4px;font-weight:900">3°G – Programación</div>
+   <p>La plataforma deportiva, cultural y tecnológica del liceo. Campeonatos, alianzas, talleres, bailes, Ecoelectro, encuestas, noticias y mucho más.</p>
+   <div class="points"><div class="point">⚽ Campeonatos</div><div class="point">🏆 Alianzas</div><div class="point">🏃 Talleres</div><div class="point">⚡ Ecoelectro</div></div>
+  </section>
+  <section class="loginright">
+   <h2>Iniciar sesión</h2><div class="sub">Accede con correo, contraseña y RUT.</div>
+   <div class="tabs"><button id="tLogin" class="tab on" onclick="loginMode('login')">Ingresar</button><button id="tReg" class="tab" onclick="loginMode('register')">Crear cuenta</button></div>
+   <div id="loginError" class="error hidden"></div>
+   <div id="authForm"></div>
+  </section>
+ </div>
+</div>
+
+<div id="app" class="app hidden">
+<header class="top">
+ <div class="brand"><img src="img/logo-liceo.png" alt=""><span>ElectroTecnia Sports</span></div>
+ <div class="topright"><span id="role" class="role"></span><span id="email" class="account"></span><span id="avatar" class="avatar">U</span><button class="logout" onclick="logout()">Salir</button></div>
+</header>
+<div class="layout">
+<aside class="side">
+ <div class="navtitle">Principal</div>
+ <button class="nav active" data-page="home" onclick="go('home')">🏠 Inicio</button>
+ <button class="nav" data-page="matches" onclick="go('matches')">⚽ Deportes</button>
+ <button class="nav" data-page="alliances" onclick="go('alliances')">🏆 Alianzas</button>
+ <button class="nav" data-page="workshops" onclick="go('workshops')">🏃 Talleres</button>
+ <button class="nav" data-page="ecoelectro" onclick="go('ecoelectro')">⚡ Ecoelectro</button>
+ <button class="nav" data-page="events" onclick="go('events')">🎪 Eventos</button>
+ <button class="nav" data-page="calendar" onclick="go('calendar')">📅 Calendario</button>
+ <button class="nav" data-page="polls" onclick="go('polls')">🗳️ Encuestas</button>
+ <button class="nav" data-page="gallery" onclick="go('gallery')">📸 Galería</button>
+ <button class="nav" data-page="news" onclick="go('news')">📰 Noticias</button>
+ <button class="nav" data-page="notifications" onclick="go('notifications')">🔔 Notificaciones</button>
+ <div class="navtitle">Mi cuenta</div>
+ <button class="nav" data-page="profile" onclick="go('profile')">👤 Mi perfil</button>
+ <button class="nav" data-page="myactivities" onclick="go('myactivities')">🎫 Mis inscripciones</button>
+ <button class="nav" data-page="badges" onclick="go('badges')">🎮 Mis logros</button>
+ <div id="adminNav">
+  <div class="navtitle">Administración</div>
+  <button class="nav admin" data-page="admin" onclick="go('admin')">🛡️ Dashboard</button>
+  <div id="admOnlyNav"><button class="nav admin" data-page="users" onclick="go('users')">👥 Usuarios y roles</button>
+  <button class="nav admin" data-page="content" onclick="go('content')">⚙️ Constructor</button>
+  <button class="nav admin" data-page="settings" onclick="go('settings')">🔐 Configuración</button></div>
+ </div>
+</aside>
+<main id="content" class="content"></main>
+</div>
+<nav class="bottom"><button onclick="go('home')"><b>🏠</b>Inicio</button><button onclick="go('matches')"><b>⚽</b>Deportes</button><button onclick="go('alliances')"><b>🏆</b>Alianzas</button><button onclick="go('calendar')"><b>📅</b>Calendario</button><button onclick="go('profile')"><b>👤</b>Perfil</button></nav>
+</div>
+<div id="modalbg" class="modalbg" onclick="if(event.target===this)closeModal()"><div id="modal" class="modal"></div></div>
+
+
+<!-- Orden de carga: configuración -> datos -> capa de base de datos -> aplicación -->
+<script src="js/config.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
