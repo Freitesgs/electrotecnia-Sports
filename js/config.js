@@ -11,7 +11,7 @@
    ============================================================ */
 
 const CONFIG = {
-  SUPABASE_URL: '',            // ej: 'https://ab123.supabase.co'
-  SUPABASE_ANON_KEY: '',       // clave pública "anon" (nunca la service_role)
+  SUPABASE_URL: 'https://ixomyuaqanrostrggxiy.supabase.co/rest/v1/',            // ej: 'https://ab123.supabase.co'
+  SUPABASE_ANON_KEY: 'sb_publishable_U-rr5BZN9kPQ9kUKE--Jtg_VHHxaS5C',       // clave pública "anon" (nunca la service_role)
   STORAGE_KEY: 'ets_ultra_v2'  // respaldo local cuando Supabase no está configurado
 };
