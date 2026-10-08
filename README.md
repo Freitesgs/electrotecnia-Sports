@@ -9,15 +9,18 @@ Centraliza campeonatos, deportes, talleres, alianzas, eventos y Ecoelectro del l
 ```
 electro-sports/
 ├── index.html              Estructura de la página (HTML5)
+├── admin.html              🛡️ Panel de administración de usuarios (separado)
+├── reset.html              🔑 Página para restablecer contraseña (llega el correo)
 ├── css/
-
+│   └── style.css           Diseño (CSS3), incluido modo celular
 ├── js/
 │   ├── config.js           ← CONEXIÓN A LA BASE DE DATOS (edita aquí)
 │   ├── seed.js             Datos de ejemplo (se cargan en Supabase si está vacía)
 │   ├── db.js               Capa de datos: guarda y sincroniza con Supabase
+│   ├── auth.js             Autenticación con Supabase Auth (registro y recuperación)
 │   └── app.js              Funcionalidad: login, roles, vistas, inscripciones
 ├── img/
-│   ├── logo-liceo.png      Logo oficial del liceo
+│   ├── logo-liceo.png      Logo oficial del liceo (fondo transparente)
 │   └── favicon.png         Icono de la pestaña
 └── supabase/
     └── schema.sql          Tablas de la base de datos (PostgreSQL)
@@ -61,9 +64,17 @@ Usuario → Aplicación (JavaScript) → Supabase → PostgreSQL
 
 | Rol | Correo | Contraseña | RUT |
 |---|---|---|---|
-| Estudiante | estudiante@electrotecnia.cl | 123456 | 22.222.222-2 |
-| Profesor-Admin | profesor@electrotecnia.cl | 123456 | 22.222.222-5 |
+| Estudiante | gabriel@liceorbl.cl | 123456 | 22.222.222-2 |
+| Profesor-Admin | profesor@liceosofofa.cl | 123456 | 22.222.222-5 |
 | Administrador | admin@electrotecnia.cl | Admin123! | 11.111.111-1 |
+
+### 📧 Registro de nuevos usuarios (regla del liceo)
+
+- Solo se aceptan correos que terminen en **@liceorbl.cl** o **@liceosofofa.cl**.
+- **@liceorbl.cl** → entra automáticamente como **estudiante**.
+- **@liceosofofa.cl** → entra automáticamente como **profesor**.
+- El curso se elige de una lista fija: **1°G, 2°G, 3°G, 4°G** (nadie escribe mal el curso).
+- Para cambiar a alguien de rol/curso/RUT: usa **admin.html**.
 
 **Estudiante:** consulta partidos, resultados, tablas y goleadores, se inscribe
 respetando los cupos, participa en encuestas y ve noticias y fotos.
@@ -73,6 +84,41 @@ resultados y gestiona cupos.
 
 **Administrador:** además, control general: usuarios y roles, constructor,
 creación de campeonatos y configuración.
+
+## 🆕 Novedades de la versión 2
+
+- 👁️ **Ver contraseñas** con el botón del ojo (login, registro y restablecer).
+- 🔑 **¿Olvidaste tu contraseña?** → Supabase envía un correo → `reset.html` → contraseña nueva.
+  Requiere configurar Supabase Auth (ver abajo).
+- 🚫 **Cupos llenos** con ícono: la actividad deja de aceptar inscripciones.
+- 🔐 **Inscribirse pide tu contraseña** (nadie puede inscribir a otro).
+- 👥 **Profesor/admin ve los inscritos** de cada actividad con **nombre y RUT**,
+  y puede **eliminar a cualquier inscrito**.
+- 📅 **Talleres con días y horarios** (varios días a la semana) y **estado**
+  (✅ normal / ⚠️ suspendido), visible para los estudiantes.
+- ⚽ **Goles en vivo**: al editar un partido hay botones "+1 Gol" que piden el
+  goleador; si el partido ya terminó, se escribe el marcador completo.
+- 🛡️ **admin.html**: panel separado para el administrador, conectado a la misma
+  base de datos: edita nombre, RUT, curso, rol (estudiante/profesor/admin),
+  alianza y puntos de cualquier usuario. Requiere iniciar sesión.
+- 📱 **100% funcional en el celular** (diseño responsive mejorado).
+- Al crear una actividad **ya no te saca de la página** donde estabas.
+
+## 🔑 Configurar Supabase Auth (recuperación de contraseña por correo)
+
+1. En Supabase: **Authentication → Providers → Email** → desactiva
+   **"Confirm email"** (para que se pueda entrar apenas se registren).
+2. **Authentication → URL Configuration**:
+   - **Site URL**: la dirección de tu app
+     (`https://tusuario.github.io/electro-sports/` o la de Live Server).
+   - **Redirect URLs**: agrega **`https://tusuario.github.io/electro-sports/reset.html`**
+     y también `http://127.0.0.1:5500/reset.html` (Live Server), para que el
+     enlace del correo funcione en ambos.
+3. (Opcional) En **Authentication → Emails** puedes poner en español la plantilla
+   **"Reset Password"** (cambia "Reset Password" por "Restablecer contraseña").
+
+> ⚠️ Si ya tenías las tablas creadas, ejecuta el bloque **ACTUALIZACIÓN** del final
+> de `supabase/schema.sql` (agrega las columnas nuevas de `actividades`).
 
 ## 🚀 Siguientes pasos (futuro)
 

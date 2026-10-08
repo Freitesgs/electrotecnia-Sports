@@ -18,3 +18,20 @@ h1{margin:0;font-size:29px;letter-spacing:-1px}h2{margin:0 0 8px}h3{margin:0;fon
 .bottom{display:none}
 @media(max-width:900px){.side{width:195px}.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.match{grid-template-columns:1fr 90px 1fr}}
 @media(max-width:700px){.top{padding:0 12px}.side{display:none}.content{padding:14px 12px 85px}.g2,.g3,.g4{grid-template-columns:1fr}.top .account{display:none}.bottom{position:fixed;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:40}.bottom button{border:0;background:#fff;font-size:8px;font-weight:900;color:#657386}.bottom button b{display:block;font-size:18px;margin-bottom:2px}.loginbox{grid-template-columns:1fr}.loginleft{display:none}.loginright{padding:25px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.gallery{grid-template-columns:1fr 1fr}.photo{height:100px}}
+
+/* ===== v2: ojo de contraseñas, días de talleres, móvil ===== */
+.pw{position:relative}.pw input{width:100%;padding-right:42px}.pweye{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:14px;cursor:pointer;padding:4px}
+.dayschk{display:flex;gap:8px;flex-wrap:wrap}.dayschk label{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:850;color:#526277;background:#f5f7fa;border:1px solid var(--line);border-radius:9px;padding:8px 10px;cursor:pointer;user-select:none}.dayschk label:has(input:checked){background:#eaf3ff;border-color:#74a9df;color:var(--blue)}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.field select{width:100%}
+@media(max-width:700px){
+ .btn{padding:12px 14px;font-size:11px}
+ .field input,.field select,.field textarea{padding:13px;font-size:11px}
+ .table th,.table td{padding:12px 8px}
+ .dayschk label{padding:10px 12px;font-size:11px}
+ .hero h1{font-size:24px}.metric{font-size:22px}
+ .activity{flex-direction:column}.activity .ico{width:100%;height:44px}
+ .modal{padding:16px}
+ .search{font-size:13px!important}
+}
+@media(hover:none){.nav,.btn{min-height:44px}}

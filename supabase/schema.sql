@@ -60,7 +60,11 @@ create table if not exists actividades (
   reg   int default 0,             -- inscritos
   "desc" text,
   icon  text,
-  mine  boolean default false      -- demo: en producción va en la tabla inscripciones
+  mine  boolean default false,     -- demo: en producción va en la tabla inscripciones
+  days  jsonb default '[]',       -- días de la semana: ["Lunes","Jueves"]
+  hours text,                      -- horario: "16:30 - 18:00"
+  status text default 'activo',    -- activo / suspendido
+  registered jsonb default '[]'    -- inscritos: [{uid,name,rut,course,date}]
 );
 
 create table if not exists inscripciones (   -- versión real de los cupos por usuario
@@ -177,3 +181,14 @@ end $$;
 -- la aplicación los carga sola en Supabase la primera vez que
 -- detecta las tablas vacías.
 -- ============================================================
+
+
+-- ============================================================
+-- ACTUALIZACIÓN (solo si ya habías creado las tablas antes)
+-- Ejecuta este bloque aparte en el SQL Editor si tu base ya
+-- existe: agrega las columnas nuevas sin borrar nada.
+-- ============================================================
+alter table actividades add column if not exists days       jsonb default '[]';
+alter table actividades add column if not exists hours      text;
+alter table actividades add column if not exists status     text default 'activo';
+alter table actividades add column if not exists registered jsonb default '[]';

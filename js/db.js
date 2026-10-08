@@ -56,7 +56,9 @@ function initSupabase() {
     console.info('ElectroTecnia Sports: modo demo local (configura Supabase en js/config.js)');
     return false;
   }
-  _sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+  // Limpia errores comunes al pegar la URL: espacios, barra final o "/rest/v1" sobrante
+  const url = CONFIG.SUPABASE_URL.trim().replace(/\/+$/, '').replace(/\/rest\/v1$/i, '');
+  _sb = window.supabase.createClient(url, CONFIG.SUPABASE_ANON_KEY.trim());
   console.info('ElectroTecnia Sports: conectado a Supabase');
   return true;
 }

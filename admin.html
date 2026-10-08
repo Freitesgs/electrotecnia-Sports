@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Panel de administración · ElectroTecnia Sports</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+ body{background:var(--bg)}
+ .admwrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+ .admcard{width:min(430px,100%);text-align:center}
+ .admcard img{height:80px;width:auto;object-fit:contain;filter:drop-shadow(0 4px 10px #0003);margin-bottom:8px}
+ .admcard .fields{margin-top:14px;display:flex;flex-direction:column;gap:11px;text-align:left}
+ .admhead{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(110deg,#062b5d,#0759ac 65%,#d7192e);color:#fff;padding:14px 18px;border-radius:14px;flex-wrap:wrap;position:sticky;top:10px;z-index:5;box-shadow:0 10px 30px #062b5d33}
+ .admhead img{height:38px;width:38px;object-fit:contain}
+ .admbody{max-width:1150px;margin:0 auto;padding:16px}
+ .search{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:11px;margin:14px 0;outline:0}
+ .search:focus{border-color:#74a9df;box-shadow:0 0 0 3px #0a67b112}
+ .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+ @media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="admLogin" class="admwrap">
+ <div class="admcard card">
+  <img src="img/logo-liceo.png" alt="Logo">
+  <h2>🛡️ Panel de administración</h2>
+  <div class="small">Gestión de usuarios de ElectroTecnia Sports. Solo administradores.</div>
+  <div id="admErr" class="error hidden" style="margin-top:12px"></div>
+  <div class="fields">
+   <div class="field"><label>Correo</label><input id="ae" type="email" placeholder="admin@electrotecnia.cl"></div>
+   <div class="field"><label>Contraseña</label><div class="pw"><input id="ap" type="password" placeholder="••••••"><button type="button" class="pweye" onclick="tPw('ap',this)">👁️</button></div></div>
+   <div class="field"><label>RUT</label><input id="ar" placeholder="11.111.111-1" onkeydown="if(event.key==='Enter')admLogin()"></div>
+   <button class="btn primary" style="padding:12px" onclick="admLogin()">Ingresar al panel</button>
+   <a href="index.html" style="text-align:center;font-size:10px;font-weight:900;color:var(--blue)">← Volver a la aplicación</a>
+  </div>
+ </div>
+</div>
+
+<div id="admPanel" class="admbody hidden">
+ <div class="admhead">
+  <div class="row" style="color:#fff"><img src="img/logo-liceo.png" alt=""><b>🛡️ Panel de usuarios</b></div>
+  <div class="actions">
+   <button class="btn ghost" style="background:#ffffff12;color:#fff;border:1px solid #ffffff45" onclick="refresh()">🔄 Actualizar</button>
+   <a class="btn ghost" style="background:#ffffff12;color:#fff;border:1px solid #ffffff45;text-decoration:none" href="index.html">↩ App</a>
+   <button class="btn danger" onclick="admLogout()">Salir</button>
+  </div>
+ </div>
+ <div class="stats">
+  <div class="card"><div class="small">👥 Total</div><div class="metric" id="stTotal">0</div></div>
+  <div class="card"><div class="small">👤 Estudiantes</div><div class="metric" id="stStudents">0</div></div>
+  <div class="card"><div class="small">🧑‍🏫 Profesores</div><div class="metric" id="stTeachers">0</div></div>
+  <div class="card"><div class="small">🛡️ Administradores</div><div class="metric" id="stAdmins">0</div></div>
+ </div>
+ <input id="q" class="search" placeholder="🔍 Buscar por nombre, correo o RUT..." oninput="renderUsers()">
+ <div class="card"><div class="tablewrap"><table class="table" id="usersTable"></table></div></div>
+</div>
+
+<div id="admModalBg" class="modalbg" onclick="if(event.target===this)admCloseModal()"><div id="admModal" class="modal"></div></div>
+
+<script src="js/config.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/db.js"></script>
+<script src="js/auth.js"></script>
+<script>
+/* ============================================================
+   PANEL DE ADMINISTRACIÓN (admin.html)
+   Conectado a la misma base de datos que la app principal:
+   los cambios que hagas aquí los ve todo el mundo.
+   ============================================================ */
+let admSession=null, editId=null;
+const COURSES=['1°G','2°G','3°G','4°G'];
+function $id(x){return document.getElementById(x)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function tPw(id,el){const i=$id(id);const show=i.type==='password';i.type=show?'text':'password';el.textContent=show?'🙈':'👁️'}
+function admErr(t){const e=$id('admErr');e.textContent=t;e.classList.remove('hidden')}
+function roleLabel(r){return r==='admin'?'🛡️ Administrador':r==='profesor'?'🧑‍🏫 Profesor':'👤 Estudiante'}
+
+async function admLogin(){
+ const e=$id('ae').value.trim().toLowerCase(),p=$id('ap').value,r=$id('ar').value.trim();
+ if(!e||!p||!r)return admErr('Completa correo, contraseña y RUT.');
+ let u=null;
+ if(e===db.admin.email.toLowerCase()&&p===db.admin.password&&r===db.admin.rut)u={role:'admin',id:'root',name:db.admin.name,email:e};
+ if(!u){
+  const f=db.users.find(x=>x.email.toLowerCase()===e&&x.role==='admin');
+  if(!f)return admErr('Este panel es solo para cuentas de administrador.');
+  const r1=await AUTH.signIn(e,p);
+  if(!r1.ok&&f.password!==p)return admErr('Correo, contraseña o RUT incorrectos.');
+  if(f.rut&&r!==f.rut)return admErr('El RUT no coincide con esta cuenta.');
+  u=f;
+ }
+ admSession=u;
+ await refresh();
+ $id('admLogin').classList.add('hidden');$id('admPanel').classList.remove('hidden');
+}
+
+async function refresh(){
+ if(connected()){try{await pullSupabase()}catch(e){}}
+ renderUsers();
+}
+
+function renderUsers(){
+ const q=($id('q').value||'').toLowerCase();
+ $id('stTotal').textContent=db.users.length;
+ $id('stStudents').textContent=db.users.filter(u=>!u.role||u.role==='student').length;
+ $id('stTeachers').textContent=db.users.filter(u=>u.role==='profesor').length;
+ $id('stAdmins').textContent=db.users.filter(u=>u.role==='admin').length;
+ const rows=db.users.filter(u=>!q||(u.name+' '+u.email+' '+(u.rut||'')).toLowerCase().includes(q));
+ $id('usersTable').innerHTML=`<thead><tr><th>Usuario</th><th>Correo</th><th>RUT</th><th>Curso</th><th>Rol</th><th></th></tr></thead><tbody>${rows.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td>${esc(u.rut||'—')}</td><td>${esc(u.course||'—')}</td><td><span class="badge ${u.role==='admin'?'red':u.role==='profesor'?'blue':''}">${roleLabel(u.role)}</span></td><td><button class="btn soft" onclick="openEdit('${u.id}')">✏️ Editar</button></td></tr>`).join('')||'<tr><td colspan="6" class="small">Sin resultados.</td></tr>'}</tbody>`;
+}
+
+function openEdit(id){
+ const u=db.users.find(x=>x.id===id);if(!u)return;
+ editId=id;
+ $id('admModal').innerHTML=`<h2>✏️ Editar usuario</h2><div class="notice blue"><b>${esc(u.email)}</b> · ${u.points||0} puntos. El correo no se cambia (es la identidad de la cuenta).</div><div class="formgrid" style="margin-top:12px"><div class="field full"><label>Nombre</label><input id="en" value="${esc(u.name)}"></div><div class="field full"><label>RUT</label><input id="er" value="${esc(u.rut||'')}"></div><div class="field"><label>Curso</label><select id="ec"><option value="">Sin curso</option>${COURSES.map(c=>`<option ${u.course===c?'selected':''}>${c}</option>`).join('')}</select></div><div class="field"><label>Rol</label><select id="eR"><option value="student" ${(u.role||'student')==='student'?'selected':''}>👤 Estudiante</option><option value="profesor" ${u.role==='profesor'?'selected':''}>🧑‍🏫 Profesor</option><option value="admin" ${u.role==='admin'?'selected':''}>🛡️ Administrador</option></select></div><div class="field"><label>Alianza</label><select id="ea">${['','Roja','Azul','Verde','Amarilla'].map(a=>`<option ${u.alliance===a?'selected':''} value="${a}">${a||'Sin alianza'}</option>`).join('')}</select></div><div class="field"><label>Puntos</label><input id="ep" type="number" value="${u.points||0}"></div></div><div class="modalfoot"><button class="btn ghost" onclick="admCloseModal()">Cancelar</button><button class="btn primary" onclick="saveUser()">💾 Guardar cambios</button></div>`;
+ $id('admModalBg').classList.add('show');
+}
+
+function saveUser(){
+ const u=db.users.find(x=>x.id===editId);if(!u)return;
+ const name=$id('en').value.trim(),rut=$id('er').value.trim();
+ if(!name)return alert('El nombre no puede quedar vacío.');
+ u.name=name;u.rut=rut;u.course=$id('ec').value;u.role=$id('eR').value;u.alliance=$id('ea').value;u.points=+$id('ep').value||0;
+ save();   /* guarda y sincroniza con Supabase: el cambio lo ven todos */
+ admCloseModal();renderUsers();
+ alert('✅ Usuario actualizado: '+name);
+}
+
+function admCloseModal(){$id('admModalBg').classList.remove('show')}
+function admLogout(){admSession=null;$id('admPanel').classList.add('hidden');$id('admLogin').classList.remove('hidden')}
+
+/* Arranque: conectar base de datos y verificar sesión previa */
+initSupabase();
+if(connected())pullSupabase().then(()=>renderUsers()).catch(()=>{});
+</script>
+</body>
+</html>

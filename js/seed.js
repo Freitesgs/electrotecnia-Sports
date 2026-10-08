@@ -3,10 +3,10 @@ const SEED={
  role:'student',session:null,
  admin:{email:'admin@electrotecnia.cl',password:'Admin123!',rut:'11.111.111-1',name:'Administrador ElectroTecnia'},
  users:[
-  {id:'u1',name:'Gabriel Freites',email:'estudiante@electrotecnia.cl',password:'123456',rut:'22.222.222-2',course:'2° Medio',alliance:'Roja',points:450},
-  {id:'u2',name:'Valentina Soto',email:'valentina@electrotecnia.cl',password:'123456',rut:'22.222.222-3',course:'2° Medio',alliance:'Azul',points:320},
-  {id:'u3',name:'Matías Rojas',email:'matias@electrotecnia.cl',password:'123456',rut:'22.222.222-4',course:'3° Medio',alliance:'Verde',points:280},
-  {id:'u4',name:'Profesor Antonio',email:'profesor@electrotecnia.cl',password:'123456',rut:'22.222.222-5',course:'—',alliance:'',points:0,role:'profesor'}
+  {id:'u1',name:'Gabriel Freites',email:'gabriel@liceorbl.cl',password:'123456',rut:'22.222.222-2',course:'3°G',alliance:'Roja',points:450},
+  {id:'u2',name:'Valentina Soto',email:'valentina@liceorbl.cl',password:'123456',rut:'22.222.222-3',course:'2°G',alliance:'Azul',points:320},
+  {id:'u3',name:'Matías Rojas',email:'matias@liceorbl.cl',password:'123456',rut:'22.222.222-4',course:'3°G',alliance:'Verde',points:280},
+  {id:'u4',name:'Profesor Antonio',email:'profesor@liceosofofa.cl',password:'123456',rut:'22.222.222-5',course:'—',alliance:'',points:0,role:'profesor'}
  ],
  championships:[
   {id:'c1',name:'Campeonato de Fútbol',icon:'⚽',teams:['Alianza Roja','Alianza Azul','Alianza Verde','Alianza Amarilla']},
@@ -24,13 +24,13 @@ const SEED={
   {id:'m8',champ:'c3',a:'3°A',b:'3°B',date:'02 Oct 2026',time:'09:30',place:'Gimnasio',status:'Próximo',sa:0,sb:0,goals:[],assists:[]}
  ],
   activities:[
-  {id:'a1',type:'Taller',name:'Taller de Calistenia',date:'Todos los martes',time:'16:30',place:'Gimnasio',cap:30,reg:18,desc:'Entrenamiento de fuerza, movilidad y progresiones.',icon:'💪',mine:false},
-  {id:'a2',type:'Taller',name:'Taller de Fútbol',date:'Todos los jueves',time:'16:30',place:'Cancha principal',cap:40,reg:34,desc:'Entrenamiento técnico y táctico.',icon:'⚽',mine:true},
-  {id:'a3',type:'Baile',name:'Baile de Cueca',date:'10 Sep 2026',time:'11:00',place:'Patio central',cap:80,reg:51,desc:'Presentación de Fiestas Patrias.',icon:'💃',mine:true},
-  {id:'a4',type:'Alianza',name:'Tirar la cuerda',date:'05 Sep 2026',time:'12:00',place:'Patio',cap:24,reg:20,desc:'Competencia por alianzas.',icon:'🪢',mine:false},
-  {id:'a5',type:'Alianza',name:'Quemados',date:'05 Sep 2026',time:'13:00',place:'Gimnasio',cap:32,reg:28,desc:'Torneo de quemados por alianza.',icon:'🔥',mine:false},
-  {id:'a6',type:'Alianza',name:'Barra brava',date:'05 Sep 2026',time:'09:00',place:'Patio central',cap:120,reg:86,desc:'Animación y apoyo a la alianza.',icon:'📣',mine:false},
-  {id:'a7',type:'Alianza',name:'Lienzos y pintura',date:'04 Sep 2026',time:'15:30',place:'Taller',cap:30,reg:13,desc:'Preparación de lienzos y decoración.',icon:'🎨',mine:false}
+  {id:'a1',type:'Taller',name:'Taller de Calistenia',date:'Semanal',time:'16:30 - 18:00',place:'Gimnasio',cap:30,reg:18,desc:'Entrenamiento de fuerza, movilidad y progresiones.',icon:'💪',mine:false,days:['Martes'],hours:'16:30 - 18:00',status:'activo',registered:[]},
+  {id:'a2',type:'Taller',name:'Taller de Fútbol',date:'Semanal',time:'16:30 - 18:00',place:'Cancha principal',cap:40,reg:34,desc:'Entrenamiento técnico y táctico.',icon:'⚽',mine:false,days:['Jueves'],hours:'16:30 - 18:00',status:'activo',registered:[{uid:'u1',name:'Gabriel Freites',rut:'22.222.222-2',course:'3°G',date:'Ago 2026'}]},
+  {id:'a3',type:'Baile',name:'Baile de Cueca',date:'10 Sep 2026',time:'11:00',place:'Patio central',cap:80,reg:51,desc:'Presentación de Fiestas Patrias.',icon:'💃',mine:false,days:['Miércoles'],hours:'11:00 - 12:30',status:'activo',registered:[]},
+  {id:'a4',type:'Alianza',name:'Tirar la cuerda',date:'05 Sep 2026',time:'12:00',place:'Patio',cap:24,reg:24,desc:'Competencia por alianzas.',icon:'🪢',mine:false,days:['Sábado'],hours:'12:00 - 13:00',status:'activo',registered:[]},
+  {id:'a5',type:'Alianza',name:'Quemados',date:'05 Sep 2026',time:'13:00',place:'Gimnasio',cap:32,reg:28,desc:'Torneo de quemados por alianza.',icon:'🔥',mine:false,days:['Sábado'],hours:'13:00 - 14:00',status:'suspendido',registered:[]},
+  {id:'a6',type:'Alianza',name:'Barra brava',date:'05 Sep 2026',time:'09:00',place:'Patio central',cap:120,reg:86,desc:'Animación y apoyo a la alianza.',icon:'📣',mine:false,days:['Sábado'],hours:'09:00 - 12:00',status:'activo',registered:[]},
+  {id:'a7',type:'Alianza',name:'Lienzos y pintura',date:'04 Sep 2026',time:'15:30',place:'Taller',cap:30,reg:13,desc:'Preparación de lienzos y decoración.',icon:'🎨',mine:false,days:['Viernes'],hours:'15:30 - 17:00',status:'activo',registered:[]}
  ],
  polls:[
   {id:'p1',q:'¿Qué campeonato deportivo debería realizarse?',opts:[['Fútbol',42],['Básquet',31],['Vóleibol',27]],voted:false,open:true},
