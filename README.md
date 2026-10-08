@@ -134,3 +134,4 @@ creación de campeonatos y configuración.
   (marcado en `schema.sql`).
 - `mine` (inscripciones) y `voted` (encuestas) son simplificaciones de la demo;
   la versión por usuario real usa las tablas `inscripciones` y `votos`.
+
